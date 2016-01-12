@@ -10,11 +10,11 @@ import cv2
 # input: a tile
 # output: a classification
 
-img = cv2.imread('/home/matthewi/Pictures/reignite.png')
-grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+img = cv2.imread('data/wtd.jpg')
+grey = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
 
 edges = cv2.Canny(grey, 100, 200)
 
-cv2.imwrite("edges.bmp", edges)
+cv2.imwrite("data/edges.bmp", edges)
 
 # list of points -> kml
