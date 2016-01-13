@@ -1,5 +1,4 @@
 import numpy
-from scipy import signal
 
 import cv2
 
@@ -21,9 +20,10 @@ grey = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
 edges = cv2.Canny(grey, 100, 200)
 cv2.imwrite("data/edges.bmp", edges)
 window_size = 20
-filter = numpy.ones([window_size, window_size]) / window_size / window_size
+filter = numpy.ones([window_size, window_size], numpy.float32) / window_size / window_size
 
-filtered = signal.fftconvolve(edges, filter)
+filtered = cv2.filter2D(edges, 1, filter)
+
 cv2.imwrite("data/filtered.bmp", filtered)
 
 # step 5: use the analysis to classify points into target/not target communities
@@ -31,12 +31,8 @@ cv2.imwrite("data/filtered.bmp", filtered)
 #         that counts/sums the edges surrounding a point
 #         more edges = more complex structures = target community?
 
-thresholded = numpy.asarray(filtered)
 thresh = 75
-low = thresholded <= thresh
-high = thresholded > thresh
-thresholded[low] = 0
-thresholded[high] = 255
+ret, thresholded = cv2.threshold(filtered.astype(numpy.uint8), thresh, 255, cv2.THRESH_BINARY)
 cv2.imwrite("data/thresholded.bmp", thresholded)
 
 # step 6: merge adjacent target communities into larger groups?
